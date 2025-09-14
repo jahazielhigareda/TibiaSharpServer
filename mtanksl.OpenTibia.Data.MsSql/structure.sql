@@ -646,3 +646,70 @@ GO
 
 COMMIT;
 GO
+
+--
+
+BEGIN TRANSACTION;
+GO
+
+ALTER TABLE [RuleViolationReports] ADD [StatmentIPAddress] nvarchar(255) NOT NULL DEFAULT N'';
+GO
+
+DECLARE @var0 sysname;
+SELECT @var0 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Guilds]') AND [c].[name] = N'MessageOfTheDay');
+IF @var0 IS NOT NULL EXEC(N'ALTER TABLE [Guilds] DROP CONSTRAINT [' + @var0 + '];');
+ALTER TABLE [Guilds] ALTER COLUMN [MessageOfTheDay] nvarchar(255) NULL;
+GO
+
+DECLARE @var1 sysname;
+SELECT @var1 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[GuildMembers]') AND [c].[name] = N'RankName');
+IF @var1 IS NOT NULL EXEC(N'ALTER TABLE [GuildMembers] DROP CONSTRAINT [' + @var1 + '];');
+UPDATE [GuildMembers] SET [RankName] = N'' WHERE [RankName] IS NULL;
+ALTER TABLE [GuildMembers] ALTER COLUMN [RankName] nvarchar(255) NOT NULL;
+ALTER TABLE [GuildMembers] ADD DEFAULT N'' FOR [RankName];
+GO
+
+DECLARE @var2 sysname;
+SELECT @var2 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[GuildInvitations]') AND [c].[name] = N'RankName');
+IF @var2 IS NOT NULL EXEC(N'ALTER TABLE [GuildInvitations] DROP CONSTRAINT [' + @var2 + '];');
+UPDATE [GuildInvitations] SET [RankName] = N'' WHERE [RankName] IS NULL;
+ALTER TABLE [GuildInvitations] ALTER COLUMN [RankName] nvarchar(255) NOT NULL;
+ALTER TABLE [GuildInvitations] ADD DEFAULT N'' FOR [RankName];
+GO
+
+CREATE TABLE [RuleViolations] (
+    [Id] int NOT NULL IDENTITY,
+    [PlayerId] int NOT NULL,
+    [Name] nvarchar(255) NOT NULL,
+    [Reason] tinyint NOT NULL,
+    [Action] tinyint NOT NULL,
+    [Comment] nvarchar(255) NOT NULL,
+    [StatmentPlayerId] int NULL,
+    [Statment] nvarchar(255) NULL,
+    [StatmentDate] datetime2 NULL,
+    [StatmentIPAddress] nvarchar(255) NOT NULL,
+    [IPAddressBanishment] bit NOT NULL,
+    [CreationDate] datetime2 NOT NULL,
+    CONSTRAINT [PK_RuleViolations] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_RuleViolations_Players_PlayerId] FOREIGN KEY ([PlayerId]) REFERENCES [Players] ([Id]) ON DELETE CASCADE,
+    CONSTRAINT [FK_RuleViolations_Players_StatmentPlayerId] FOREIGN KEY ([StatmentPlayerId]) REFERENCES [Players] ([Id])
+);
+GO
+
+CREATE INDEX [IX_RuleViolations_PlayerId] ON [RuleViolations] ([PlayerId]);
+GO
+
+CREATE INDEX [IX_RuleViolations_StatmentPlayerId] ON [RuleViolations] ([StatmentPlayerId]);
+GO
+
+COMMIT;
+GO

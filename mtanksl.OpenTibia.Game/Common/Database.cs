@@ -122,6 +122,23 @@ namespace OpenTibia.Game.Common
             }
         }
 
+        private IRuleViolationRepository ruleViolationRepository;
+
+        /// <exception cref="ObjectDisposedException"></exception>
+
+        public IRuleViolationRepository RuleViolationRepository
+        {
+            get
+            {
+                if (disposed)
+                {
+                    throw new ObjectDisposedException(nameof(Database) );
+                }
+
+                return ruleViolationRepository ?? (ruleViolationRepository = new RuleViolationRepository(databaseContext) );
+            }
+        }
+
         private IRuleViolationReportRepository ruleViolationReportRepository;
 
         /// <exception cref="ObjectDisposedException"></exception>

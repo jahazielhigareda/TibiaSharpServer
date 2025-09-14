@@ -41,7 +41,7 @@ namespace OpenTibia.Game.Commands
 
                             if (guild != null)
                             {
-                                ShowTextOutgoingPacket showTextOutgoingPacket = new ShowTextOutgoingPacket(Context.Server.Channels.GenerateStatementId(Player.DatabasePlayerId, Message), Player.Name, Player.Level, MessageMode.GamemasterChannelAnonymous, channel.Id, Message);
+                                ShowTextOutgoingPacket showTextOutgoingPacket = new ShowTextOutgoingPacket(Context.Server.Channels.GenerateStatementId(Player.DatabasePlayerId, Message, Player.Client.Connection.IpAddress), Player.Name, Player.Level, MessageMode.GamemasterChannelAnonymous, channel.Id, Message);
 
                                 foreach (var item in guild.GetMembers() )
                                 {
@@ -60,7 +60,7 @@ namespace OpenTibia.Game.Commands
 
                             if (party != null)
                             {
-                                ShowTextOutgoingPacket showTextOutgoingPacket = new ShowTextOutgoingPacket(Context.Server.Channels.GenerateStatementId(Player.DatabasePlayerId, Message), Player.Name, Player.Level, MessageMode.GamemasterChannelAnonymous, channel.Id, Message);
+                                ShowTextOutgoingPacket showTextOutgoingPacket = new ShowTextOutgoingPacket(Context.Server.Channels.GenerateStatementId(Player.DatabasePlayerId, Message, Player.Client.Connection.IpAddress), Player.Name, Player.Level, MessageMode.GamemasterChannelAnonymous, channel.Id, Message);
 
                                 foreach (var observer in party.GetMembers() )
                                 {
@@ -70,7 +70,7 @@ namespace OpenTibia.Game.Commands
                         }
                         else
                         {
-                            ShowTextOutgoingPacket showTextOutgoingPacket = new ShowTextOutgoingPacket(Context.Server.Channels.GenerateStatementId(Player.DatabasePlayerId, Message), Player.Name, Player.Level, MessageMode.GamemasterChannelAnonymous, channel.Id, Message);
+                            ShowTextOutgoingPacket showTextOutgoingPacket = new ShowTextOutgoingPacket(Context.Server.Channels.GenerateStatementId(Player.DatabasePlayerId, Message, Player.Client.Connection.IpAddress), Player.Name, Player.Level, MessageMode.GamemasterChannelAnonymous, channel.Id, Message);
 
                             foreach (var observer in channel.GetMembers() )
                             {

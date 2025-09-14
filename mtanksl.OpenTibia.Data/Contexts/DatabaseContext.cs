@@ -272,6 +272,8 @@ namespace OpenTibia.Data.Contexts
 
         public DbSet<DbPlayerVip> PlayerVips { get; set; }
                 
+        public DbSet<DbRuleViolation> RuleViolations { get; set; }
+
         public DbSet<DbRuleViolationReport> RuleViolationReports { get; set; }
 
         public DbSet<DbServerStorage> ServerStorages { get; set; }

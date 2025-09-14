@@ -21,6 +21,26 @@ namespace OpenTibia.Game.Commands
         {
             Context.AddPacket(Player, new SendInfoOutgoingPacket(Player.Id, Constants.ServerBeat, Constants.CreatureSpeedA, Constants.CreatureSpeedB, Constants.CreatureSpeedC, Player.Rank == Rank.Tutor || Player.Rank == Rank.Gamemaster) );
 
+            if (Player.Rank == Rank.Gamemaster)
+            {
+                int violationReasons = 20;
+
+                if (Context.Server.Features.ClientVersion >= 850)
+                {
+                    violationReasons = 20;
+                }
+                else if (Context.Server.Features.ClientVersion >= 840)
+                {
+                    violationReasons = 23;
+                }
+                else
+                {
+                    violationReasons = 32;
+                }
+
+                Context.AddPacket(Player, new SendGamemasterActionsOutgoingPacket(violationReasons) );
+            }
+
             if (Context.Server.Features.HasFeatureFlag(FeatureFlag.LoginPending) )
             {
                 Context.AddPacket(Player, new SendPendingStateOutgoingPacket() );

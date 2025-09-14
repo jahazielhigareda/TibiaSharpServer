@@ -18,6 +18,8 @@ namespace OpenTibia.Game.Common
 
         IHouseRepository HouseRepository { get; }
 
+        IRuleViolationRepository RuleViolationRepository { get; }
+
         IRuleViolationReportRepository RuleViolationReportRepository { get; }
 
         IPlayerRepository PlayerRepository { get; }

@@ -495,3 +495,47 @@ START TRANSACTION;
 ALTER TABLE `Guilds` ADD `MessageOfTheDay` longtext CHARACTER SET utf8mb4 NULL;
 
 COMMIT;
+
+--
+
+START TRANSACTION;
+
+ALTER TABLE `RuleViolationReports` ADD `StatmentIPAddress` varchar(255) CHARACTER SET utf8mb4 NOT NULL DEFAULT '';
+
+ALTER TABLE `Guilds` MODIFY COLUMN `MessageOfTheDay` varchar(255) CHARACTER SET utf8mb4 NULL;
+
+UPDATE `GuildMembers` SET `RankName` = ''
+WHERE `RankName` IS NULL;
+SELECT ROW_COUNT();
+
+ALTER TABLE `GuildMembers` MODIFY COLUMN `RankName` varchar(255) CHARACTER SET utf8mb4 NOT NULL;
+
+UPDATE `GuildInvitations` SET `RankName` = ''
+WHERE `RankName` IS NULL;
+SELECT ROW_COUNT();
+
+ALTER TABLE `GuildInvitations` MODIFY COLUMN `RankName` varchar(255) CHARACTER SET utf8mb4 NOT NULL;
+
+CREATE TABLE `RuleViolations` (
+    `Id` int NOT NULL AUTO_INCREMENT,
+    `PlayerId` int NOT NULL,
+    `Name` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+    `Reason` tinyint unsigned NOT NULL,
+    `Action` tinyint unsigned NOT NULL,
+    `Comment` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+    `StatmentPlayerId` int NULL,
+    `Statment` varchar(255) CHARACTER SET utf8mb4 NULL,
+    `StatmentDate` datetime(6) NULL,
+    `StatmentIPAddress` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+    `IPAddressBanishment` tinyint(1) NOT NULL,
+    `CreationDate` datetime(6) NOT NULL,
+    CONSTRAINT `PK_RuleViolations` PRIMARY KEY (`Id`),
+    CONSTRAINT `FK_RuleViolations_Players_PlayerId` FOREIGN KEY (`PlayerId`) REFERENCES `Players` (`Id`) ON DELETE CASCADE,
+    CONSTRAINT `FK_RuleViolations_Players_StatmentPlayerId` FOREIGN KEY (`StatmentPlayerId`) REFERENCES `Players` (`Id`)
+) CHARACTER SET=utf8mb4;
+
+CREATE INDEX `IX_RuleViolations_PlayerId` ON `RuleViolations` (`PlayerId`);
+
+CREATE INDEX `IX_RuleViolations_StatmentPlayerId` ON `RuleViolations` (`StatmentPlayerId`);
+
+COMMIT;

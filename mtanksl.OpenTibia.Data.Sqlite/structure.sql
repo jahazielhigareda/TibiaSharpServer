@@ -655,3 +655,83 @@ BEGIN TRANSACTION;
 ALTER TABLE "Guilds" ADD "MessageOfTheDay" TEXT NULL;
 
 COMMIT;
+
+--
+
+BEGIN TRANSACTION;
+
+ALTER TABLE "RuleViolationReports" ADD "StatmentIPAddress" TEXT NOT NULL DEFAULT '';
+
+CREATE TABLE "RuleViolations" (
+    "Id" INTEGER NOT NULL CONSTRAINT "PK_RuleViolations" PRIMARY KEY AUTOINCREMENT,
+    "PlayerId" INTEGER NOT NULL,
+    "Name" TEXT NOT NULL,
+    "Reason" INTEGER NOT NULL,
+    "Action" INTEGER NOT NULL,
+    "Comment" TEXT NOT NULL,
+    "StatmentPlayerId" INTEGER NULL,
+
+    "Statment" TEXT NULL,
+    "StatmentDate" TEXT NULL,
+    "StatmentIPAddress" TEXT NOT NULL,
+    "IPAddressBanishment" INTEGER NOT NULL,
+    "CreationDate" TEXT NOT NULL,
+    CONSTRAINT "FK_RuleViolations_Players_PlayerId" FOREIGN KEY ("PlayerId") REFERENCES "Players" ("Id") ON DELETE CASCADE,
+    CONSTRAINT "FK_RuleViolations_Players_StatmentPlayerId" FOREIGN KEY ("StatmentPlayerId") REFERENCES "Players" ("Id")
+);
+
+CREATE INDEX "IX_RuleViolations_PlayerId" ON "RuleViolations" ("PlayerId");
+
+CREATE INDEX "IX_RuleViolations_StatmentPlayerId" ON "RuleViolations" ("StatmentPlayerId");
+
+CREATE TABLE "ef_temp_GuildMembers" (
+    "GuildId" INTEGER NOT NULL,
+    "PlayerId" INTEGER NOT NULL,
+    "RankName" TEXT NOT NULL,
+    CONSTRAINT "PK_GuildMembers" PRIMARY KEY ("GuildId", "PlayerId"),
+    CONSTRAINT "FK_GuildMembers_Guilds_GuildId" FOREIGN KEY ("GuildId") REFERENCES "Guilds" ("Id") ON DELETE CASCADE,
+    CONSTRAINT "FK_GuildMembers_Players_PlayerId" FOREIGN KEY ("PlayerId") REFERENCES "Players" ("Id") ON DELETE CASCADE
+);
+
+INSERT INTO "ef_temp_GuildMembers" ("GuildId", "PlayerId", "RankName")
+SELECT "GuildId", "PlayerId", IFNULL("RankName", '')
+FROM "GuildMembers";
+
+CREATE TABLE "ef_temp_GuildInvitations" (
+    "GuildId" INTEGER NOT NULL,
+    "PlayerId" INTEGER NOT NULL,
+    "RankName" TEXT NOT NULL,
+    CONSTRAINT "PK_GuildInvitations" PRIMARY KEY ("GuildId", "PlayerId"),
+    CONSTRAINT "FK_GuildInvitations_Guilds_GuildId" FOREIGN KEY ("GuildId") REFERENCES "Guilds" ("Id") ON DELETE CASCADE,
+    CONSTRAINT "FK_GuildInvitations_Players_PlayerId" FOREIGN KEY ("PlayerId") REFERENCES "Players" ("Id") ON DELETE CASCADE
+);
+
+INSERT INTO "ef_temp_GuildInvitations" ("GuildId", "PlayerId", "RankName")
+SELECT "GuildId", "PlayerId", IFNULL("RankName", '')
+FROM "GuildInvitations";
+
+COMMIT;
+
+PRAGMA foreign_keys = 0;
+
+BEGIN TRANSACTION;
+
+DROP TABLE "GuildMembers";
+
+ALTER TABLE "ef_temp_GuildMembers" RENAME TO "GuildMembers";
+
+DROP TABLE "GuildInvitations";
+
+ALTER TABLE "ef_temp_GuildInvitations" RENAME TO "GuildInvitations";
+
+COMMIT;
+
+PRAGMA foreign_keys = 1;
+
+BEGIN TRANSACTION;
+
+CREATE INDEX "IX_GuildMembers_PlayerId" ON "GuildMembers" ("PlayerId");
+
+CREATE INDEX "IX_GuildInvitations_PlayerId" ON "GuildInvitations" ("PlayerId");
+
+COMMIT;

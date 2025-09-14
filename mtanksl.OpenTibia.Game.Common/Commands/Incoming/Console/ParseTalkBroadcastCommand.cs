@@ -24,7 +24,7 @@ namespace OpenTibia.Game.Commands
 
             if (Player.Rank == Rank.Gamemaster)
             {
-                ShowTextOutgoingPacket showTextOutgoingPacket = new ShowTextOutgoingPacket(Context.Server.Channels.GenerateStatementId(Player.DatabasePlayerId, Message), Player.Name, Player.Level, MessageMode.GamemasterBroadcast, Message);
+                ShowTextOutgoingPacket showTextOutgoingPacket = new ShowTextOutgoingPacket(Context.Server.Channels.GenerateStatementId(Player.DatabasePlayerId, Message, Player.Client.Connection.IpAddress), Player.Name, Player.Level, MessageMode.GamemasterBroadcast, Message);
 
                 foreach (var observer in Context.Server.GameObjects.GetPlayers() )
                 {

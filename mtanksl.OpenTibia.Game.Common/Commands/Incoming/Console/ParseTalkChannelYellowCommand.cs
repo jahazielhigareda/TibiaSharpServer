@@ -67,7 +67,7 @@ namespace OpenTibia.Game.Commands
 
                         if (guild != null)
                         {
-                            ShowTextOutgoingPacket showTextOutgoingPacket = new ShowTextOutgoingPacket(Context.Server.Channels.GenerateStatementId(Player.DatabasePlayerId, Message), Player.Name, Player.Level, guild.IsLeader(Player) ? MessageMode.ChannelHighlight : MessageMode.Channel, channel.Id, Message);
+                            ShowTextOutgoingPacket showTextOutgoingPacket = new ShowTextOutgoingPacket(Context.Server.Channels.GenerateStatementId(Player.DatabasePlayerId, Message, Player.Client.Connection.IpAddress), Player.Name, Player.Level, guild.IsLeader(Player) ? MessageMode.ChannelHighlight : MessageMode.Channel, channel.Id, Message);
 
                             foreach (var item in guild.GetMembers() )
                             {
@@ -86,7 +86,7 @@ namespace OpenTibia.Game.Commands
 
                         if (party != null)
                         {
-                            ShowTextOutgoingPacket showTextOutgoingPacket = new ShowTextOutgoingPacket(Context.Server.Channels.GenerateStatementId(Player.DatabasePlayerId, Message), Player.Name, Player.Level, MessageMode.Channel, channel.Id, Message);
+                            ShowTextOutgoingPacket showTextOutgoingPacket = new ShowTextOutgoingPacket(Context.Server.Channels.GenerateStatementId(Player.DatabasePlayerId, Message, Player.Client.Connection.IpAddress), Player.Name, Player.Level, MessageMode.Channel, channel.Id, Message);
 
                             foreach (var observer in party.GetMembers() )
                             {
@@ -113,7 +113,7 @@ namespace OpenTibia.Game.Commands
                             }
                         }
 
-                        ShowTextOutgoingPacket showTextOutgoingPacket = new ShowTextOutgoingPacket(Context.Server.Channels.GenerateStatementId(Player.DatabasePlayerId, Message), Player.Name, Player.Level, (channel.Flags.Is(ChannelFlags.Help) && (Player.Rank == Rank.Tutor || Player.Rank == Rank.Gamemaster) ) ? MessageMode.ChannelHighlight : MessageMode.Channel, channel.Id, Message);
+                        ShowTextOutgoingPacket showTextOutgoingPacket = new ShowTextOutgoingPacket(Context.Server.Channels.GenerateStatementId(Player.DatabasePlayerId, Message, Player.Client.Connection.IpAddress), Player.Name, Player.Level, (channel.Flags.Is(ChannelFlags.Help) && (Player.Rank == Rank.Tutor || Player.Rank == Rank.Gamemaster) ) ? MessageMode.ChannelHighlight : MessageMode.Channel, channel.Id, Message);
 
                         foreach (var observer in channel.GetMembers() )
                         {

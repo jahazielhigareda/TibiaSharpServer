@@ -143,7 +143,7 @@ namespace OpenTibia.Game.Common.ServerObjects
 			if (clientVersion >= 860) 
 			{
 				featureFlags.Add(FeatureFlag.AttackSequence);
-			}
+            }
 
 			if (clientVersion >= 861)
 			{
@@ -1077,6 +1077,8 @@ namespace OpenTibia.Game.Common.ServerObjects
 
 			gameCommands.Add(0xE6, new PacketToCommand<ReportBugIncomingPacket>("Report Bug", (connection, packet) => new ParseReportBugCommand(connection.Client.Player, packet.Message) ) );
 			
+			gameCommands.Add(0xE7, new PacketToCommand<BanishmentsAndNamelocksIncomingPacket>("Banishments & Namelocks", (connection, packet) => new ParseBanishmentsAndNamelocksCommand(connection.Client.Player, packet) ) );
+
 			gameCommands.Add(0xE8, new PacketToCommand<DebugAssertIncomingPacket>("Debug Assert", (connection, packet) => new ParseDebugAssertCommand(connection.Client.Player, packet.AssertLine, packet.ReportDate, packet.Description, packet.Comment) ) );
 
             if (HasFeatureFlag(FeatureFlag.QuestLog) )

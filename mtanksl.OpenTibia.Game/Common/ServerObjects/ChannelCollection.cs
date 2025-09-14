@@ -79,7 +79,7 @@ namespace OpenTibia.Game.Common.ServerObjects
 
         private uint statementId = 0;
 
-        public uint GenerateStatementId(int databasePlayerId, string message)
+        public uint GenerateStatementId(int databasePlayerId, string message, string ipAddress)
         {
             statementId++;
 
@@ -90,6 +90,8 @@ namespace OpenTibia.Game.Common.ServerObjects
                 DatabasePlayerId = databasePlayerId,
 
                 Message = message,
+
+                IPAddress = ipAddress,
 
                 CreationDate = DateTime.UtcNow
             } );

@@ -3,26 +3,23 @@ using System.ComponentModel.DataAnnotations;
 
 namespace OpenTibia.Data.Models
 {
-    public class DbRuleViolationReport
+    public class DbRuleViolation
     {
         public int Id { get; set; }
 
         public int PlayerId { get; set; }
 
-        public int Type { get; set; }
-
-        public int RuleViolation { get; set; }
-
         [Required]
         [StringLength(255)]
         public string Name { get; set; }
 
+        public byte Reason { get; set; }
+
+        public byte Action { get; set; }
+
         [Required]
         [StringLength(255)]
         public string Comment { get; set; }
-
-        [StringLength(255)]
-        public string Translation { get; set; }
 
         public int? StatmentPlayerId { get; set; }
 
@@ -34,6 +31,8 @@ namespace OpenTibia.Data.Models
         [Required]
         [StringLength(255)]
         public string StatmentIPAddress { get; set; }
+
+        public bool IPAddressBanishment { get; set; }
 
         public DateTime CreationDate { get; set; }
 

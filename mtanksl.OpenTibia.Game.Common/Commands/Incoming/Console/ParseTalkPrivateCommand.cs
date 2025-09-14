@@ -52,7 +52,7 @@ namespace OpenTibia.Game.Commands
 
             if (observer != null && observer != Player)
             {
-                Context.AddPacket(observer, new ShowTextOutgoingPacket(Context.Server.Channels.GenerateStatementId(Player.DatabasePlayerId, Message), Player.Name, Player.Level, MessageMode.PrivateFrom, Message) );
+                Context.AddPacket(observer, new ShowTextOutgoingPacket(Context.Server.Channels.GenerateStatementId(Player.DatabasePlayerId, Message, Player.Client.Connection.IpAddress), Player.Name, Player.Level, MessageMode.PrivateFrom, Message) );
 
                 return Promise.Completed;
             }

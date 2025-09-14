@@ -65,6 +65,7 @@ namespace OpenTibia.Game.Commands
                     StatmentPlayerId = statment?.DatabasePlayerId,
                     Statment = statment?.Message,
                     StatmentDate = statment?.CreationDate,
+                    StatmentIPAddress = statment?.IPAddress ?? "",
                     CreationDate = DateTime.UtcNow
                 } );
 

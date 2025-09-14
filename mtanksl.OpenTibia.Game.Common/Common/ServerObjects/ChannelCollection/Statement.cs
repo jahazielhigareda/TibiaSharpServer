@@ -10,6 +10,8 @@ namespace OpenTibia.Game.Common.ServerObjects
 
         public string Message { get; set; }
 
+        public string IPAddress { get; set; }
+
         public DateTime CreationDate { get; set; }
     }
 }
