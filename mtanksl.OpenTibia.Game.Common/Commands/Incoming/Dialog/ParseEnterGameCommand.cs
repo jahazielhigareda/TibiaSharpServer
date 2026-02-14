@@ -177,7 +177,7 @@ namespace OpenTibia.Game.Commands
                 Context.AddPacket(Connection, new SessionKeyOutgoingPacket(Packet.Account, Packet.Password, Packet.AuthenticatorCode) );
             }
                             
-            uint premiumDays = dbAccount.PremiumUntil != null ? Math.Max(0, Math.Min(ushort.MaxValue, (uint)Math.Ceiling( (dbAccount.PremiumUntil.Value - DateTime.UtcNow).TotalDays) ) ) : 0;
+            uint premiumDays = (dbAccount.PremiumUntil != null && dbAccount.PremiumUntil.Value > DateTime.UtcNow) ? Math.Max(0, Math.Min(ushort.MaxValue, (uint)Math.Ceiling( (dbAccount.PremiumUntil.Value - DateTime.UtcNow).TotalDays) ) ) : 0;
 
             Context.AddPacket(Connection, new OpenSelectCharacterDialogOutgoingPacket(characters, AccountStatus.Ok, premiumDays == 0 ? SubscriptionStatus.Free : SubscriptionStatus.Premium, premiumDays) );
 

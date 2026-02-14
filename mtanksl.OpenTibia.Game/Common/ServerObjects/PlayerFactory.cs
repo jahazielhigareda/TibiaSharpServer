@@ -183,7 +183,7 @@ namespace OpenTibia.Game.Common.ServerObjects
 
             player.PremiumUntil = dbPlayer.Account.PremiumUntil;
 
-            player.Premium = dbPlayer.Account.PremiumUntil != null && (dbPlayer.Account.PremiumUntil.Value - DateTime.UtcNow).TotalDays > 0;
+            player.Premium = dbPlayer.Account.PremiumUntil != null && dbPlayer.Account.PremiumUntil.Value > DateTime.UtcNow && (dbPlayer.Account.PremiumUntil.Value - DateTime.UtcNow).TotalDays > 0;
 
             player.BankAccount = (ulong)dbPlayer.BankAccount;
 
