@@ -40,6 +40,8 @@ namespace OpenTibia.Game.Commands
 
                 ulong totalDamage = (ulong)hits.Values.Sum(h => h.Damage);
 
+                HashSet<Player> processedParties = new HashSet<Player>();
+
                 foreach (var pair in hits)
                 {
                     Creature attacker = pair.Key;
@@ -48,13 +50,47 @@ namespace OpenTibia.Game.Commands
 
                     if (attacker is Player player && player.Tile != null && !player.IsDestroyed)
                     {
-                        ulong damage = (ulong)hit.Damage;
+                        Party party = Context.Server.Parties.GetPartyThatContainsMember(player);
 
-                        ulong experience = totalExperience * damage / totalDamage;
-
-                        if (experience > 0)
+                        if (party != null && party.SharedExperienceEnabled && !processedParties.Contains(party.Leader))
                         {
-                            await Context.AddCommand(new PlayerAddExperienceCommand(player, experience) );
+                            processedParties.Add(party.Leader);
+
+                            ulong partyDamage = (ulong)hits
+                                .Where(h => h.Key is Player pm && party.ContainsMember(pm))
+                                .Sum(h => h.Value.Damage);
+
+                            ulong partyExperience = totalExperience * partyDamage / totalDamage;
+
+                            List<Player> eligibleMembers = party.GetMembers()
+                                .Where(m => m.Tile != null && !m.IsDestroyed &&
+                                            m.Tile.Position.Z == monster.Tile.Position.Z &&
+                                            m.Tile.Position.ChebyshevDistance(monster.Tile.Position) <= 30)
+                                .ToList();
+
+                            if (eligibleMembers.Count > 0 && partyExperience > 0)
+                            {
+                                ulong experiencePerMember = partyExperience / (ulong)eligibleMembers.Count;
+
+                                if (experiencePerMember > 0)
+                                {
+                                    foreach (var member in eligibleMembers)
+                                    {
+                                        await Context.AddCommand(new PlayerAddExperienceCommand(member, experiencePerMember) );
+                                    }
+                                }
+                            }
+                        }
+                        else if (party == null || !party.SharedExperienceEnabled)
+                        {
+                            ulong damage = (ulong)hit.Damage;
+
+                            ulong experience = totalExperience * damage / totalDamage;
+
+                            if (experience > 0)
+                            {
+                                await Context.AddCommand(new PlayerAddExperienceCommand(player, experience) );
+                            }
                         }
                     }
                 }
