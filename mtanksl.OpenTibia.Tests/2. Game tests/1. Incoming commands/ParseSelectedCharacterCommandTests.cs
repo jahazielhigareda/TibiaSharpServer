@@ -71,8 +71,9 @@ namespace OpenTibia.Tests
                     a.Execute(new ParseSelectedCharacterCommand(a.Connection, packet) )
                      .ExpectSuccess()
                      .Observe(o => o
-                         .ExpectPacket(10)
+                         .ExpectPacket(11)
                          .ExpectPacket<SendInfoOutgoingPacket>(1)
+                         .ExpectPacket<SendGamemasterActionsOutgoingPacket>(1)
                          .ExpectPacket<SendTilesOutgoingPacket>(1)
                          .ExpectPacket<SlotAddOutgoingPacket>(1)
                          .ExpectPacket<SendStatusOutgoingPacket>(1)
@@ -176,8 +177,9 @@ namespace OpenTibia.Tests
                     a.Execute(new ParseSelectedCharacterCommand(a.Connection, packet) )
                      .ExpectSuccess()
                      .Observe(o => o
-                         .ExpectPacket(10)
+                         .ExpectPacket(11)
                          .ExpectPacket<SendInfoOutgoingPacket>(1)
+                         .ExpectPacket<SendGamemasterActionsOutgoingPacket>(1)
                          .ExpectPacket<SendTilesOutgoingPacket>(1)
                          .ExpectPacket<SlotAddOutgoingPacket>(1)
                          .ExpectPacket<SendStatusOutgoingPacket>(1)
